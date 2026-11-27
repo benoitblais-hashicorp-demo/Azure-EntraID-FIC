@@ -6,6 +6,8 @@ This file provides instructions for AI coding agents working on this Terraform P
 
 This project provisions a Microsoft Entra ID (Azure AD) app registration, its enterprise application (service principal), and a federated identity credential (FIC) that allows the workspaces of an HCP Terraform project to authenticate to Azure using OpenID Connect (OIDC) dynamic credentials, without storing client secrets.
 
+It also provisions a second app registration authenticated with a generated client secret valid for 3 months (expiration computed with `time_offset`), for cases where dynamic credentials can't be used.
+
 The app registration is created by calling the private registry module `app.terraform.io/benoitblais-hashicorp/appregistration/azuread` and does not declare `azuread` resources directly. The code uses the `hashicorp/azuread` provider.
 
 ## Module and Repository Structure
@@ -73,7 +75,8 @@ Refer to `docs/CONTRIBUTING.md` for general coding guidelines. HashiCorp's Terra
 - The subject claim format is `organization:<ORG>:project:<PROJECT>:workspace:<WORKSPACE>:run_phase:<plan|apply>`.
 - To trust a whole HCP Terraform project, use a flexible federated credential (`flexible_federated_credentials` input of the module) with the expression `claims['sub'] matches 'organization:<ORG>:project:<PROJECT>:workspace:*:run_phase:*'`. This is an Entra ID preview feature.
 - To trust specific workspaces only, use standard federated credentials (`federated_credentials` input), one per workspace and run phase.
-- Never create client secrets (the module `secret` input) for this application; authentication must rely exclusively on federated credentials.
+- Never add the module `secret` input to the federated app registration (`module.appregistration`); it must rely exclusively on federated credentials.
+- Client secrets are only allowed on the dedicated `module.appregistration_secret`. They must always have an explicit expiration date, and the secret output must stay `sensitive = true`.
 
 ## Version Management
 
