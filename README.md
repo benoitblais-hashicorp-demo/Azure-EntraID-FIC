@@ -69,7 +69,7 @@ The following Modules are called:
 
 Source: app.terraform.io/benoitblais-hashicorp/appregistration/azuread
 
-Version: 0.0.1
+Version: 0.0.2
 
 ## Required Inputs
 
