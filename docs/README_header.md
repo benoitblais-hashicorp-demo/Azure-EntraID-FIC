@@ -24,9 +24,12 @@ The identity running Terraform needs one of the following:
 The `azuread` provider is configured through environment variables (workspace variables), preferably with
 HCP Terraform dynamic provider credentials:
 
+* `TFC_AZURE_PROVIDER_AUTH` – set to `true` to enable dynamic credentials (recommended).
+* `TFC_AZURE_RUN_CLIENT_ID` – the client ID of the app registration used by this workspace, which must have a federated credential matching this workspace.
 * `ARM_TENANT_ID` – the Entra ID tenant.
-* `ARM_USE_OIDC` and `ARM_CLIENT_ID` – to authenticate with OIDC (recommended).
-* `ARM_CLIENT_SECRET` – only when OIDC is not possible. Set it as a sensitive workspace variable.
+* `ARM_CLIENT_SECRET` (with `ARM_CLIENT_ID`) – only when dynamic credentials are not possible. Set it as a sensitive workspace variable.
+
+Do not set `ARM_CLIENT_ID`, `ARM_USE_OIDC` or `ARM_OIDC_TOKEN` together with dynamic credentials. HCP Terraform provides the OIDC token itself, and these variables make the provider look for a token that doesn't exist, then fall back to Azure CLI authentication.
 
 ## Features
 
