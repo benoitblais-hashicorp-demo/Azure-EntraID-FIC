@@ -7,7 +7,7 @@ data "azuread_client_config" "current" {}
 
 module "appregistration" {
   source  = "app.terraform.io/benoitblais-hashicorp/appregistration/azuread"
-  version = "~> 0.0.2"
+  version = "0.0.1"
 
   display_name = var.display_name
   description  = "Used by HCP Terraform project ${var.tfc_project_name} to provision infrastructure with dynamic credentials."
